@@ -1,0 +1,57 @@
+import os
+
+
+def load(location):
+    """Return a database object and import data in location"""
+    return KeyValueDB(location)
+
+
+class KeyValueDB:
+    def __init__(self, location):
+        """Creates a database object and loads the data from the location path.
+        If the file does not exist it will be created on the first update.
+        """
+        self.load(location)
+
+    def load(self, location):
+        """Loads the data file"""
+        location = os.path.expanduser(location)
+        if os.path.exists(location):
+            self._load_db(location)
+        else:
+            print("Data location does not exists")
+            self.db = {}
+        return True
+
+    def _load_db(self, location):
+        """Helper function to load data file"""
+        self.db = {}
+        with open(location) as f:
+            for line in f:
+                key, *values = line.split()
+                self.db[key] = " ".join(values)
+
+    def get(self, key):
+        """Get the value of a key"""
+        try:
+            return self.db[key]
+        except KeyError:
+            return False
+
+    def get_all(self):
+        """Return a list of all keys in db"""
+        return self.db.keys()
+
+    def exists(self, key):
+        """Return True if key exists in db, return False if not"""
+        return key in self.db
+
+    def total_keys(self):
+        """Get a total number of keys in db"""
+        total = len(self.db)
+        return total
+
+    def del_db(self):
+        """Delete everything from the database"""
+        self.db = {}
+        return True
