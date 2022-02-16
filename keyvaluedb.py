@@ -1,13 +1,10 @@
 from typing import Union
-
 import os
 
 
 class KeyValueDB:
     def __init__(self, location: str) -> None:
-        """Creates a database object and loads the data from the location path.
-        If the file does not exist it will be created on the first update.
-        """
+        """Creates a database object and loads the data from the location path."""
         self.load(location)
 
     def load(self, location: str) -> bool:
@@ -16,7 +13,7 @@ class KeyValueDB:
         if os.path.exists(location):
             self._load_db(location)
         else:
-            print("Data location does not exists")
+            print("Data location does not exist")
             self.db = {}
         return True
 
@@ -26,7 +23,7 @@ class KeyValueDB:
         with open(location) as f:
             for line in f:
                 key, *values = line.split()
-                self.db[key] = " ".join(values)
+                self.db[str.encode(key)] = str.encode(" ".join(values))
 
     def get(self, key: str) -> Union[str, bool]:
         """Get the value of a key"""

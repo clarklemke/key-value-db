@@ -1,4 +1,4 @@
-from setuptools import setup
+from distutils.core import setup
 
 setup(
     name="key-value-db",
@@ -7,5 +7,6 @@ setup(
     author="Clark Lemke",
     author_email="clarklemke@gmail.com",
     url="https://github.com/clarklemke/key-value-db",
-    py_modules=["keyvaluedb"],
+    py_modules=["keyvaluedb", "server"],
+    install_requires=["h11"],
 )
