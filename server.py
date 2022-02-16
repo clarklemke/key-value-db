@@ -36,14 +36,25 @@ class HTTPProtocol(asyncio.Protocol):
     def send_response(self, event) -> None:
         # Lookup from key-value DB
         body = db.get(event.target[1:])
-        headers = [
-            ("content-type", "text/plain"),
-            ("content-length", str(len(body))),
-        ]
-        response = h11.Response(status_code=200, headers=headers)
-        self.send(response)
-        self.send(h11.Data(data=body))
-        self.send(h11.EndOfMessage())
+        if body:
+            headers = [
+                ("content-type", "application/octet-stream"),
+                ("content-length", str(len(body))),
+            ]
+            response = h11.Response(status_code=200, headers=headers)
+            self.send(response)
+            self.send(h11.Data(data=body))
+            self.send(h11.EndOfMessage())
+        else:
+            body = b"Key not found"
+            headers = [
+                ("content-type", "application/octet-stream"),
+                ("content-length", str(len(body))),
+            ]
+            response = h11.Response(status_code=404, headers=headers)
+            self.send(response)
+            self.send(h11.Data(data=body))
+            self.send(h11.EndOfMessage())
 
     def send(self, event) -> None:
         data = self.connection.send(event)
